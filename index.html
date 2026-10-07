@@ -1,0 +1,1246 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Тайны Океана и Земли</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f3460 100%);
+            color: #fff;
+            overflow-x: hidden;
+        }
+
+        /* Анимированный фон с волнами */
+        .wave-background {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+            overflow: hidden;
+        }
+
+        .wave {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 200%;
+            height: 100px;
+            background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 120"><path d="M0,50 Q300,0 600,50 T1200,50 L1200,120 L0,120 Z" fill="rgba(15,52,96,0.3)"/></svg>');
+            background-repeat: repeat-x;
+            animation: wave 15s linear infinite;
+        }
+
+        .wave:nth-child(2) {
+            bottom: 20px;
+            animation: wave 10s linear infinite reverse;
+            opacity: 0.5;
+        }
+
+        .wave:nth-child(3) {
+            bottom: 40px;
+            animation: wave 20s linear infinite;
+            opacity: 0.3;
+        }
+
+        @keyframes wave {
+            0% { transform: translateX(0); }
+            100% { transform: translateX(50%); }
+        }
+
+        /* Навигация */
+        nav {
+            position: fixed;
+            top: 0;
+            width: 100%;
+            background: rgba(26, 26, 46, 0.95);
+            backdrop-filter: blur(10px);
+            padding: 1rem 2rem;
+            z-index: 1000;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 2px 20px rgba(0, 0, 0, 0.3);
+        }
+
+        .logo {
+            font-size: 1.8rem;
+            font-weight: bold;
+            background: linear-gradient(45deg, #00d4ff, #0099ff);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 2rem;
+            list-style: none;
+        }
+
+        .nav-links a {
+            color: #fff;
+            text-decoration: none;
+            transition: all 0.3s;
+            position: relative;
+        }
+
+        .nav-links a:hover {
+            color: #00d4ff;
+        }
+
+        .nav-links a::after {
+            content: '';
+            position: absolute;
+            bottom: -5px;
+            left: 0;
+            width: 0;
+            height: 2px;
+            background: #00d4ff;
+            transition: width 0.3s;
+        }
+
+        .nav-links a:hover::after {
+            width: 100%;
+        }
+
+        /* Главный заголовок */
+        .hero {
+            margin-top: 80px;
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .hero-content h1 {
+            font-size: 4rem;
+            margin-bottom: 1rem;
+            animation: fadeInDown 1s ease-out;
+            background: linear-gradient(45deg, #00d4ff, #00ffff, #0099ff);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .hero-content p {
+            font-size: 1.3rem;
+            margin-bottom: 2rem;
+            color: #ccc;
+            animation: fadeInUp 1s ease-out 0.2s backwards;
+        }
+
+        @keyframes fadeInDown {
+            from {
+                opacity: 0;
+                transform: translateY(-30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* Кнопки */
+        .btn-container {
+            display: flex;
+            gap: 1rem;
+            justify-content: center;
+            flex-wrap: wrap;
+            animation: fadeInUp 1s ease-out 0.4s backwards;
+        }
+
+        .btn {
+            padding: 0.8rem 2rem;
+            border: none;
+            border-radius: 50px;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: all 0.3s;
+            font-weight: bold;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .btn-primary {
+            background: linear-gradient(45deg, #00d4ff, #0099ff);
+            color: #000;
+            box-shadow: 0 0 20px rgba(0, 212, 255, 0.4);
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 0 30px rgba(0, 212, 255, 0.6);
+        }
+
+        .btn-secondary {
+            background: transparent;
+            color: #00d4ff;
+            border: 2px solid #00d4ff;
+        }
+
+        .btn-secondary:hover {
+            background: #00d4ff;
+            color: #000;
+            transform: translateY(-3px);
+        }
+
+        /* Секции контента */
+        .section {
+            padding: 5rem 2rem;
+            max-width: 1200px;
+            margin: 0 auto;
+            position: relative;
+            z-index: 10;
+        }
+
+        .section-title {
+            font-size: 2.5rem;
+            margin-bottom: 3rem;
+            text-align: center;
+            background: linear-gradient(45deg, #00d4ff, #00ffff);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        /* Карточки рассказов */
+        .stories-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+        }
+
+        .story-card {
+            background: rgba(15, 52, 96, 0.5);
+            border: 1px solid rgba(0, 212, 255, 0.3);
+            border-radius: 15px;
+            padding: 2rem;
+            backdrop-filter: blur(10px);
+            transition: all 0.3s;
+            cursor: pointer;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .story-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(0, 212, 255, 0.2), transparent);
+            transition: left 0.5s;
+        }
+
+        .story-card:hover::before {
+            left: 100%;
+        }
+
+        .story-card:hover {
+            border-color: rgba(0, 212, 255, 0.8);
+            transform: translateY(-10px);
+            box-shadow: 0 10px 30px rgba(0, 212, 255, 0.2);
+        }
+
+        .story-icon {
+            font-size: 3rem;
+            margin-bottom: 1rem;
+        }
+
+        .story-card h3 {
+            margin-bottom: 1rem;
+            font-size: 1.5rem;
+        }
+
+        .story-card p {
+            color: #bbb;
+            line-height: 1.6;
+        }
+
+        /* Интерактивная карта */
+        .map-section {
+            background: rgba(15, 52, 96, 0.3);
+            border-radius: 20px;
+            padding: 3rem;
+            margin: 3rem 0;
+            border: 1px solid rgba(0, 212, 255, 0.3);
+        }
+
+        .map-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 1rem;
+            margin-top: 2rem;
+        }
+
+        .location-box {
+            background: rgba(0, 212, 255, 0.1);
+            border: 2px solid rgba(0, 212, 255, 0.3);
+            padding: 1.5rem;
+            border-radius: 10px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .location-box:hover {
+            background: rgba(0, 212, 255, 0.2);
+            border-color: #00d4ff;
+            transform: scale(1.05);
+        }
+
+        /* Статистика */
+        .stats {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 2rem;
+            margin: 3rem 0;
+        }
+
+        .stat-box {
+            text-align: center;
+            padding: 2rem;
+            background: rgba(0, 212, 255, 0.1);
+            border-radius: 15px;
+            border: 1px solid rgba(0, 212, 255, 0.3);
+        }
+
+        .stat-number {
+            font-size: 2.5rem;
+            color: #00d4ff;
+            font-weight: bold;
+            margin-bottom: 0.5rem;
+        }
+
+        .stat-label {
+            color: #bbb;
+        }
+
+        /* Галерея с эффектами */
+        .gallery {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 1.5rem;
+            margin-top: 2rem;
+        }
+
+        .gallery-item {
+            position: relative;
+            overflow: hidden;
+            border-radius: 15px;
+            height: 250px;
+            cursor: pointer;
+            group: 1;
+        }
+
+        .gallery-item img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: transform 0.3s;
+        }
+
+        .gallery-item:hover img {
+            transform: scale(1.1);
+        }
+
+        .gallery-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.7);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            opacity: 0;
+            transition: opacity 0.3s;
+            border-radius: 15px;
+        }
+
+        .gallery-item:hover .gallery-overlay {
+            opacity: 1;
+        }
+
+        /* Форма подписки */
+        .newsletter {
+            background: linear-gradient(135deg, rgba(0, 212, 255, 0.1), rgba(0, 153, 255, 0.1));
+            border: 1px solid rgba(0, 212, 255, 0.3);
+            border-radius: 20px;
+            padding: 3rem;
+            text-align: center;
+            margin: 3rem 0;
+        }
+
+        .newsletter h3 {
+            margin-bottom: 1rem;
+            font-size: 2rem;
+        }
+
+        .newsletter-form {
+            display: flex;
+            gap: 0.5rem;
+            max-width: 500px;
+            margin: 2rem auto;
+            flex-wrap: wrap;
+            justify-content: center;
+        }
+
+        .newsletter-form input {
+            flex: 1;
+            min-width: 200px;
+            padding: 0.8rem 1.5rem;
+            border: 1px solid rgba(0, 212, 255, 0.5);
+            border-radius: 50px;
+            background: rgba(255, 255, 255, 0.1);
+            color: #fff;
+            transition: all 0.3s;
+        }
+
+        .newsletter-form input:focus {
+            outline: none;
+            border-color: #00d4ff;
+            background: rgba(255, 255, 255, 0.15);
+        }
+
+        .newsletter-form input::placeholder {
+            color: rgba(255, 255, 255, 0.5);
+        }
+
+        /* Футер */
+        footer {
+            background: rgba(26, 26, 46, 0.95);
+            padding: 2rem;
+            text-align: center;
+            border-top: 1px solid rgba(0, 212, 255, 0.2);
+            position: relative;
+            z-index: 10;
+        }
+
+        .footer-links {
+            display: flex;
+            justify-content: center;
+            gap: 2rem;
+            margin-bottom: 1rem;
+            flex-wrap: wrap;
+        }
+
+        .footer-links a {
+            color: #00d4ff;
+            text-decoration: none;
+            transition: color 0.3s;
+        }
+
+        .footer-links a:hover {
+            color: #00ffff;
+        }
+
+        /* Модальное окно */
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 2000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.8);
+            backdrop-filter: blur(5px);
+            animation: fadeIn 0.3s;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        .modal-content {
+            background: linear-gradient(135deg, #1a1a2e, #16213e);
+            margin: 10% auto;
+            padding: 2rem;
+            border: 1px solid rgba(0, 212, 255, 0.3);
+            width: 90%;
+            max-width: 600px;
+            border-radius: 20px;
+            box-shadow: 0 0 40px rgba(0, 212, 255, 0.2);
+            animation: slideIn 0.3s;
+        }
+
+        @keyframes slideIn {
+            from {
+                transform: translateY(-50px);
+                opacity: 0;
+            }
+            to {
+                transform: translateY(0);
+                opacity: 1;
+            }
+        }
+
+        .close {
+            color: #aaa;
+            float: right;
+            font-size: 28px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: color 0.3s;
+        }
+
+        .close:hover {
+            color: #00d4ff;
+        }
+
+        /* Прогресс-бар */
+        .progress-bar {
+            position: fixed;
+            top: 0;
+            left: 0;
+            height: 3px;
+            background: linear-gradient(90deg, #00d4ff, #0099ff);
+            z-index: 999;
+            animation: progress 2s ease-in-out forwards;
+        }
+
+        @keyframes progress {
+            0% { width: 0%; }
+            50% { width: 70%; }
+            100% { width: 100%; }
+        }
+
+        /* Адаптивность */
+        @media (max-width: 768px) {
+            .hero-content h1 {
+                font-size: 2.5rem;
+            }
+
+            .nav-links {
+                gap: 1rem;
+                font-size: 0.9rem;
+            }
+
+            .section-title {
+                font-size: 2rem;
+            }
+
+            .btn-container {
+                flex-direction: column;
+                align-items: center;
+            }
+
+            .btn {
+                width: 100%;
+                max-width: 300px;
+            }
+        }
+
+        /* Частицы */
+        .particle {
+            position: fixed;
+            pointer-events: none;
+            z-index: 1;
+        }
+
+        /* Скролл-индикатор */
+        .scroll-indicator {
+            position: absolute;
+            bottom: 30px;
+            left: 50%;
+            transform: translateX(-50%);
+            animation: bounce 2s infinite;
+        }
+
+        @keyframes bounce {
+            0%, 20%, 50%, 80%, 100% {
+                transform: translateX(-50%) translateY(0);
+            }
+            40% {
+                transform: translateX(-50%) translateY(10px);
+            }
+            60% {
+                transform: translateX(-50%) translateY(5px);
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="progress-bar"></div>
+
+    <div class="wave-background">
+        <div class="wave"></div>
+        <div class="wave"></div>
+        <div class="wave"></div>
+    </div>
+
+    <!-- Навигация -->
+    <nav>
+        <div class="logo">🌊 OCEAN & EARTH 🌍</div>
+        <ul class="nav-links">
+            <li><a href="#home">Главная</a></li>
+            <li><a href="#stories">Рассказы</a></li>
+            <li><a href="#locations">Локации</a></li>
+            <li><a href="#gallery">Галерея</a></li>
+            <li><a href="#about">О сайте</a></li>
+        </ul>
+    </nav>
+
+    <!-- Главный раздел -->
+    <section class="hero" id="home">
+        <div class="hero-content">
+            <h1>🌊 Тайны Океана и Земли 🌍</h1>
+            <p>Откройте удивительные истории нашей планеты</p>
+            <div class="btn-container">
+                <button class="btn btn-primary" onclick="scrollToSection('stories')">Читать рассказы</button>
+                <button class="btn btn-secondary" onclick="openModal('about-modal')">Узнать больше</button>
+            </div>
+        </div>
+        <div class="scroll-indicator">
+            <p style="font-size: 1.5rem;">⬇️</p>
+        </div>
+    </section>
+
+    <!-- Статистика -->
+    <section class="section">
+        <div class="stats">
+            <div class="stat-box">
+                <div class="stat-number" id="counter1">0</div>
+                <div class="stat-label">Глубина Марианской впадины (км)</div>
+            </div>
+            <div class="stat-box">
+                <div class="stat-number" id="counter2">0</div>
+                <div class="stat-label">Видов в океане</div>
+            </div>
+            <div class="stat-box">
+                <div class="stat-number" id="counter3">0</div>
+                <div class="stat-label">Лет существует Земля (млн)</div>
+            </div>
+            <div class="stat-box">
+                <div class="stat-number" id="counter4">0</div>
+                <div class="stat-label">% поверхности океана</div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Рассказы -->
+    <section class="section" id="stories">
+        <h2 class="section-title">📖 Увлекательные рассказы</h2>
+        <div class="stories-grid">
+            <div class="story-card" onclick="openModal('story1')">
+                <div class="story-icon">🐙</div>
+                <h3>Осьминоги - гении морей</h3>
+                <p>Узнайте об интеллекте осьминогов и их невероятных способностях маскировки</p>
+                <button class="btn btn-secondary" style="margin-top: 1rem; width: 100%;">Прочитать</button>
+            </div>
+
+            <div class="story-card" onclick="openModal('story2')">
+                <div class="story-icon">🌋</div>
+                <h3>Вулканы Земли</h3>
+                <p>История вулканических извержений и их влияние на формирование континентов</p>
+                <button class="btn btn-secondary" style="margin-top: 1rem; width: 100%;">Прочитать</button>
+            </div>
+
+            <div class="story-card" onclick="openModal('story3')">
+                <div class="story-icon">🦈</div>
+                <h3>Акулы древних морей</h3>
+                <p>Мегалодон и другие доисторические хищники океана</p>
+                <button class="btn btn-secondary" style="margin-top: 1rem; width: 100%;">Прочитать</button>
+            </div>
+
+            <div class="story-card" onclick="openModal('story4')">
+                <div class="story-icon">❄️</div>
+                <h3>Ледниковые периоды</h3>
+                <p>Как ледниковые периоды менял облик нашей планеты</p>
+                <button class="btn btn-secondary" style="margin-top: 1rem; width: 100%;">Прочитать</button>
+            </div>
+
+            <div class="story-card" onclick="openModal('story5')">
+                <div class="story-icon">🏝️</div>
+                <h3>Коралловые рифы</h3>
+                <p>Красота и хрупкость подводных лесов нашей планеты</p>
+                <button class="btn btn-secondary" style="margin-top: 1rem; width: 100%;">Прочитать</button>
+            </div>
+
+            <div class="story-card" onclick="openModal('story6')">
+                <div class="story-icon">🌊</div>
+                <h3>Течения океана</h3>
+                <p>Как океанические течения влияют на климат Земли</p>
+                <button class="btn btn-secondary" style="margin-top: 1rem; width: 100%;">Прочитать</button>
+            </div>
+        </div>
+    </section>
+
+    <!-- Интерактивные локации -->
+    <section class="section" id="locations">
+        <h2 class="section-title">🗺️ Исследуйте локации</h2>
+        <div class="map-section">
+            <p style="text-align: center; margin-bottom: 2rem;">Нажмите на локацию для подробной информации</p>
+            <div class="map-container">
+                <div class="location-box" onclick="showLocationInfo('mariana')">
+                    <p style="font-size: 2rem;">🕳️</p>
+                    <p><strong>Марианская впадина</strong></p>
+                    <p style="font-size: 0.8rem; color: #aaa;">11 км в глубину</p>
+                </div>
+                <div class="location-box" onclick="showLocationInfo('amazon')">
+                    <p style="font-size: 2rem;">🌴</p>
+                    <p><strong>Амазонка</strong></p>
+                    <p style="font-size: 0.8rem; color: #aaa;">Легкие планеты</p>
+                </div>
+                <div class="location-box" onclick="showLocationInfo('sahara')">
+                    <p style="font-size: 2rem;">🏜️</p>
+                    <p><strong>Сахара</strong></p>
+                    <p style="font-size: 0.8rem; color: #aaa;">9 млн км²</p>
+                </div>
+                <div class="location-box" onclick="showLocationInfo('everest')">
+                    <p style="font-size: 2rem;">⛰️</p>
+                    <p><strong>Эверест</strong></p>
+                    <p style="font-size: 0.8rem; color: #aaa;">8.849 км высоты</p>
+                </div>
+                <div class="location-box" onclick="showLocationInfo('aurora')">
+                    <p style="font-size: 2rem;">✨</p>
+                    <p><strong>Полярные сияния</strong></p>
+                    <p style="font-size: 0.8rem; color: #aaa;">Северный полюс</p>
+                </div>
+                <div class="location-box" onclick="showLocationInfo('reef')">
+                    <p style="font-size: 2rem;">🪸</p>
+                    <p><strong>Большой барьерный риф</strong></p>
+                    <p style="font-size: 0.8rem; color: #aaa;">2300 км рифов</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Галерея -->
+    <section class="section" id="gallery">
+        <h2 class="section-title">📸 Галерея изображений</h2>
+        <div class="gallery">
+            <div class="gallery-item" onclick="openModal('img1')">
+                <div style="width: 100%; height: 100%; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); display: flex; align-items: center; justify-content: center;">
+                    <span style="font-size: 4rem;">🌊</span>
+                </div>
+                <div class="gallery-overlay">
+                    <p>Глубины океана</p>
+                </div>
+            </div>
+            <div class="gallery-item" onclick="openModal('img2')">
+                <div style="width: 100%; height: 100%; background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%); display: flex; align-items: center; justify-content: center;">
+                    <span style="font-size: 4rem;">🏔️</span>
+                </div>
+                <div class="gallery-overlay">
+                    <p>Горные пики</p>
+                </div>
+            </div>
+            <div class="gallery-item" onclick="openModal('img3')">
+                <div style="width: 100%; height: 100%; background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%); display: flex; align-items: center; justify-content: center;">
+                    <span style="font-size: 4rem;">🌅</span>
+                </div>
+                <div class="gallery-overlay">
+                    <p>Закаты планеты</p>
+                </div>
+            </div>
+            <div class="gallery-item" onclick="openModal('img4')">
+                <div style="width: 100%; height: 100%; background: linear-gradient(135deg, #43e97b 0%, #38f9d7 100%); display: flex; align-items: center; justify-content: center;">
+                    <span style="font-size: 4rem;">🦋</span>
+                </div>
+                <div class="gallery-overlay">
+                    <p>Жизнь биосферы</p>
+                </div>
+            </div>
+            <div class="gallery-item" onclick="openModal('img5')">
+                <div style="width: 100%; height: 100%; background: linear-gradient(135deg, #fa709a 0%, #fee140 100%); display: flex; align-items: center; justify-content: center;">
+                    <span style="font-size: 4rem;">⚡</span>
+                </div>
+                <div class="gallery-overlay">
+                    <p>Энергия природы</p>
+                </div>
+            </div>
+            <div class="gallery-item" onclick="openModal('img6')">
+                <div style="width: 100%; height: 100%; background: linear-gradient(135deg, #30cfd0 0%, #330867 100%); display: flex; align-items: center; justify-content: center;">
+                    <span style="font-size: 4rem;">🌌</span>
+                </div>
+                <div class="gallery-overlay">
+                    <p>Космос и земля</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Подписка на новости -->
+    <section class="newsletter">
+        <h3>📧 Получайте новые рассказы</h3>
+        <p>Подпишитесь на рассылку и узнавайте о новых открытиях первыми</p>
+        <form class="newsletter-form" onsubmit="subscribeNewsletter(event)">
+            <input type="email" placeholder="Ваш email" required>
+            <button class="btn btn-primary" type="submit">Подписаться</button>
+        </form>
+        <p id="subscribe-message"></p>
+    </section>
+
+    <!-- О сайте -->
+    <section class="section" id="about">
+        <h2 class="section-title">ℹ️ О сайте</h2>
+        <div style="background: rgba(0, 212, 255, 0.1); border: 1px solid rgba(0, 212, 255, 0.3); border-radius: 15px; padding: 2rem; max-width: 800px; margin: 0 auto;">
+            <p style="line-height: 1.8; margin-bottom: 1rem;">
+                Добро пожаловать на сайт "Тайны Океана и Земли" - уникальный проект, посвященный исследованию чудес нашей планеты. Здесь вы найдете увлекательные рассказы о животных, природных явлениях, географических местах и научных открытиях.
+            </p>
+            <p style="line-height: 1.8; margin-bottom: 1rem;">
+                Каждый рассказ написан с целью вдохновить и обучить. Мы верим, что знание о нашей планете помогает лучше ее защищать и понимать.
+            </p>
+            <p style="line-height: 1.8;">
+                Наша миссия - сделать науку доступной и интересной для всех, независимо от возраста и образования.
+            </p>
+        </div>
+    </section>
+
+    <!-- Футер -->
+    <footer>
+        <div class="footer-links">
+            <a href="#home">Главная</a>
+            <a href="#stories">Рассказы</a>
+            <a href="#gallery">Галерея</a>
+            <a href="#" onclick="openModal('contacts')">Контакты</a>
+            <a href="#" onclick="openModal('privacy')">Конфиденциальность</a>
+        </div>
+        <p>&copy; 2024 Тайны Океана и Земли. Все права защищены.</p>
+        <p style="margin-top: 1rem; font-size: 0.9rem; color: #888;">Создано с ❤️ для любителей природы</p>
+    </footer>
+
+    <!-- МОДАЛИ -->
+
+    <!-- О сайте модал -->
+    <div id="about-modal" class="modal">
+        <div class="modal-content">
+            <span class="close" onclick="closeModal('about-modal')">&times;</span>
+            <h2>О нашем проекте</h2>
+            <p style="margin-top: 1rem; line-height: 1.8;">
+                "Тайны Океана и Земли" - это интерактивный сайт, созданный для того, чтобы раскрыть красоту и сложность нашей планеты. Мы объединяем научные факты с увлекательными историями, чтобы создать уникальный опыт обучения.
+            </p>
+            <p style="margin-top: 1rem; line-height: 1.8;">
+                На нашем сайте вы найдете:
+            </p>
+            <ul style="margin-left: 2rem; margin-top: 1rem;">
+                <li>📖 Увлекательные рассказы о природе</li>
+                <li>🗺️ Интерактивные локации Земли</li>
+                <li>📸 Красивую галерею</li>
+                <li>💡 Интересные факты и статистику</li>
+            </ul>
+        </div>
+    </div>
+
+    <!-- Рассказ 1 -->
+    <div id="story1" class="modal">
+        <div class="modal-content">
+            <span class="close" onclick="closeModal('story1')">&times;</span>
+            <h2>🐙 Осьминоги - гении морей</h2>
+            <p style="margin-top: 1rem; line-height: 1.8;">
+                Осьминоги - одни из самых интеллектуальных существ на Земле. Несмотря на отсутствие позвоночника, они обладают тремя сердцами и голубой кровью!
+            </p>
+            <p style="margin-top: 1rem; line-height: 1.8;">
+                <strong>Удивительные способности:</strong>
+            </p>
+            <ul style="margin-left: 2rem; margin-top: 0.5rem;">
+                <li>🎨 Мгновенно менять цвет и текстуру кожи</li>
+                <li>🧠 Решать сложные задачи и пазлы</li>
+                <li>🎭 Используют камуфляж с ошеломляющей точностью</li>
+                <li>💪 Каждый из 8 щупальцев может действовать независимо</li>
+            </ul>
+            <p style="margin-top: 1rem; line-height: 1.8;">
+                Исследования показывают, что осьминоги могут узнавать людей, играть с игрушками и даже использовать инструменты. Это делает их одними из самых удивительных существ нашего океана!
+            </p>
+        </div>
+    </div>
+
+    <!-- Рассказ 2 -->
+    <div id="story2" class="modal">
+        <div class="modal-content">
+            <span class="close" onclick="closeModal('story2')">&times;</span>
+            <h2>🌋 Вулканы Земли</h2>
+            <p style="margin-top: 1rem; line-height: 1.8;">
+                Вулканы - это мощные силы природы, которые сформировали облик нашей планеты. Они рождают новую сушу из недр земли и питают атмосферу жизненно важными веществами.
+            </p>
+            <p style="margin-top: 1rem; line-height: 1.8;">
+                <strong>Самые известные вулканы:</strong>
+            </p>
+            <ul style="margin-left: 2rem; margin-top: 0.5rem;">
+                <li>🌋 Везувий - разрушивший Помпеи в 79 году н.э.</li>
+                <li>🌋 Кракатау - создавший одно из самых громких извержений в истории</li>
+                <li>🌋 Килауэа на Гавайях - активный вулкан, извергающийся столетиями</li>
+            </ul>
+            <p style="margin-top: 1rem; line-height: 1.8;">
+                Ежегодно извергается примерно 50 активных вулканов. Они не только опасны, но и создают плодородные почвы и новые острова!
+            </p>
+        </div>
+    </div>
+
+    <!-- Рассказ 3 -->
+    <div id="story3" class="modal">
+        <div class="modal-content">
+            <span class="close" onclick="closeModal('story3')">&times;</span>
+            <h2>🦈 Акулы древних морей</h2>
+            <p style="margin-top: 1rem; line-height: 1.8;">
+                Акулы существуют на Земле уже 450 миллионов лет - они пережили даже динозавров! Самая грозная из них была Мегалодон - акула размером с автобус!
+            </p>
+            <p style="margin-top: 1rem; line-height: 1.8;">
+                <strong>Факты о Мегалодоне:</strong>
+            </p>
+            <ul style="margin-left: 2rem; margin-top: 0.5rem;">
+                <li>📏 Длина до 18 метров</li>
+                <li>🦷 Зубы размером с человеческую руку</li>
+                <li>💪 Сила укуса в 40 тонн</li>
+                <li>⏰ Вымерла 3.6 миллиона лет назад</li>
+            </ul>
+            <p style="margin-top: 1rem; line-height: 1.8;">
+                Современные акулы остаются мастерами охоты. Они используют электросенсорное восприятие для обнаружения добычи и могут быть как опасны, так и осторожны при встречах с человеком.
+            </p>
+        </div>
+    </div>
+
+    <!-- Рассказ 4 -->
+    <div id="story4" class="modal">
+        <div class="modal-content">
+            <span class="close" onclick="closeModal('story4')">&times;</span>
+            <h2>❄️ Ледниковые периоды</h2>
+            <p style="margin-top: 1rem; line-height: 1.8;">
+                На протяжении миллионов лет Земля переживала циклы ледниковых периодов - времен, когда огромные ледяные щиты покрывали огромную часть планеты.
+            </p>
+            <p style="margin-top: 1rem; line-height: 1.8;">
+                <strong>Последний ледниковый период:</strong>
+            </p>
+            <ul style="margin-left: 2rem; margin-top: 0.5rem;">
+                <li>❄️ Закончился около 10,000 лет назад</li>
+                <li>🌍 Уровень моря был на 120 метров ниже</li>
+                <li>🦣 Жили мамонты, шерстистые носороги, пещерные львы</li>
+                <li>🏔️ Ледяные щиты простирались до современной Северной Европы</li>
+            </ul>
+            <p style="margin-top: 1rem; line-height: 1.8;">
+                Эти периоды формировали ландшафты, создавали озера и долины, которые мы видим сегодня.
+            </p>
+        </div>
+    </div>
+
+    <!-- Рассказ 5 -->
+    <div id="story5" class="modal">
+        <div class="modal-content">
+            <span class="close" onclick="closeModal('story5')">&times;</span>
+            <h2>🏝️ Коралловые рифы</h2>
+            <p style="margin-top: 1rem; line-height: 1.8;">
+                Коралловые рифы - подводные леса, которые поддерживают жизнь миллионов видов. Несмотря на занимаемую площадь менее 1% дна океана, они содержат 25% всей морской жизни!
+            </p>
+            <p style="margin-top: 1rem; line-height: 1.8;">
+                <strong>Удивительные факты:</strong>
+            </p>
+            <ul style="margin-left: 2rem; margin-top: 0.5rem;">
+                <li>🪸 Большой барьерный риф виден из космоса</li>
+                <li>🐠 Коралл - это животное, а не растение!</li>
+                <li>💎 Рифы обеспечивают пищу 500 миллионам человек</li>
+                <li>🌡️ Коралл чувствителен к повышению температуры воды</li>
+            </ul>
+            <p style="margin-top: 1rem; line-height: 1.8;">
+                К сожалению, коралловые рифы находятся под угрозой. Изменение климата, загрязнение и чрезмерный туризм вызывают отбеливание кораллов - процесс, при котором кораллы теряют свой цвет и умирают.
+            </p>
+        </div>
+    </div>
+
+    <!-- Рассказ 6 -->
+    <div id="story6" class="modal">
+        <div class="modal-content">
+            <span class="close" onclick="closeModal('story6')">&times;</span>
+            <h2>🌊 Течения океана</h2>
+            <p style="margin-top: 1rem; line-height: 1.8;">
+                Океанические течения - это гигантские реки внутри океана, которые циркулируют воду по всему миру. Они являются одними из самых мощных сил на планете и влияют на климат всей Земли!
+            </p>
+            <p style="margin-top: 1rem; line-height: 1.8;">
+                <strong>Главные течения:</strong>
+            </p>
+            <ul style="margin-left: 2rem; margin-top: 0.5rem;">
+                <li>🌊 Гольфстрим - несет теплую воду из Персидского залива в Европу</li>
+                <li>❄️ Холодное течение Перу - одно из самых мощных в мире</li>
+                <li>🌀 Циркумполярное течение - больше, чем все реки Земли вместе взятые</li>
+            </ul>
+            <p style="margin-top: 1rem; line-height: 1.8;">
+                Эти течения переносят тепло, питательные вещества и даже животных на огромные расстояния. Они регулируют климат, питают экосистемы и влияют на погоду континентов!
+            </p>
+        </div>
+    </div>
+
+    <!-- Информация о локации -->
+    <div id="location-modal" class="modal">
+        <div class="modal-content">
+            <span class="close" onclick="closeModal('location-modal')">&times;</span>
+            <div id="location-content"></div>
+        </div>
+    </div>
+
+    <!-- Контакты -->
+    <div id="contacts" class="modal">
+        <div class="modal-content">
+            <span class="close" onclick="closeModal('contacts')">&times;</span>
+            <h2>📞 Контакты</h2>
+            <p style="margin-top: 1rem;">
+                Email: <strong>info@oceanearth.com</strong><br>
+                Телефон: <strong>+1 (555) 123-4567</strong><br>
+                Адрес: <strong>Где-то в глубинах Тихого океана 🌊</strong>
+            </p>
+        </div>
+    </div>
+
+    <!-- Конфиденциальность -->
+    <div id="privacy" class="modal">
+        <div class="modal-content">
+            <span class="close" onclick="closeModal('privacy')">&times;</span>
+            <h2>🔒 Конфиденциальность</h2>
+            <p style="margin-top: 1rem; line-height: 1.8;">
+                Мы ценим вашу приватность. Все данные, которые вы предоставляете на нашем сайте, используются только для улучшения вашего опыта и не передаются третьим лицам.
+            </p>
+            <p style="margin-top: 1rem; line-height: 1.8;">
+                Мы используем файлы cookie только для улучшения функциональности сайта.
+            </p>
+        </div>
+    </div>
+
+    <script>
+        // Счетчики статистики
+        function animateCounter(elementId, finalValue, duration = 2000) {
+            const element = document.getElementById(elementId);
+            let currentValue = 0;
+            const increment = finalValue / (duration / 50);
+            
+            const interval = setInterval(() => {
+                currentValue += increment;
+                if (currentValue >= finalValue) {
+                    element.textContent = Math.floor(finalValue);
+                    clearInterval(interval);
+                } else {
+                    element.textContent = Math.floor(currentValue);
+                }
+            }, 50);
+        }
+
+        // Запуск счетчиков при загрузке страницы
+        window.addEventListener('load', () => {
+            animateCounter('counter1', 11);
+            animateCounter('counter2', 200000);
+            animateCounter('counter3', 4500);
+            animateCounter('counter4', 71);
+        });
+
+        // Модальные окна
+        function openModal(modalId) {
+            document.getElementById(modalId).style.display = 'block';
+            document.body.style.overflow = 'hidden';
+        }
+
+        function closeModal(modalId) {
+            document.getElementById(modalId).style.display = 'none';
+            document.body.style.overflow = 'auto';
+        }
+
+        window.onclick = function(event) {
+            if (event.target.classList.contains('modal')) {
+                event.target.style.display = 'none';
+                document.body.style.overflow = 'auto';
+            }
+        }
+
+        // Информация о локациях
+        const locationsInfo = {
+            mariana: {
+                title: '🕳️ Марианская впадина',
+                content: `
+                    <h2>🕳️ Марианская впадина</h2>
+                    <p style="margin-top: 1rem; line-height: 1.8;">
+                        Самое глубокое место в мировом океане, расположенное в западной части Тихого океана, вблизи Марианских островов.
+                    </p>
+                    <ul style="margin-left: 2rem; margin-top: 1rem;">
+                        <li>📏 Глубина: 10,994 метра (11 км!)</li>
+                        <li>🌊 Вода настолько холодная, что там живут только специальные виды</li>
+                        <li>⚪ Давление воды здесь в 1000 раз больше, чем на поверхности</li>
+                        <li>🧬 Несмотря на экстремальные условия, там живут рыбы и беспозвоночные</li>
+                    </ul>
+                `
+            },
+            amazon: {
+                title: '🌴 Амазонка',
+                content: `
+                    <h2>🌴 Амазонка</h2>
+                    <p style="margin-top: 1rem; line-height: 1.8;">
+                        Самый большой тропический лес на Земле, часто называемый "легкими планеты". Он производит 20% кислорода нашей планеты!
+                    </p>
+                    <ul style="margin-left: 2rem; margin-top: 1rem;">
+                        <li>🌍 Площадь: 5,5 миллионов км²</li>
+                        <li>🦜 Обитает 10% всех видов животных на Земле</li>
+                        <li>🌳 Содержит 390 миллиардов отдельных деревьев</li>
+                        <li>🌊 Амазонка - река длиной 6,400 км</li>
+                    </ul>
+                `
+            },
+            sahara: {
+                title: '🏜️ Сахара',
+                content: `
+                    <h2>🏜️ Сахара</h2>
+                    <p style="margin-top: 1rem; line-height: 1.8;">
+                        Самая большая жаркая пустыня в мире, простирающаяся через северную Африку. Несмотря на экстремальные условия, она полна жизни!
+                    </p>
+                    <ul style="margin-left: 2rem; margin-top: 1rem;">
+                        <li>📏 Площадь: 9 миллионов км²</li>
+                        <li>🌡️ Температура днем: до 50°C, ночью: до минус 10°C</li>
+                        <li>🏆 Содержит месторождения нефти и газа</li>
+                        <li>🦁 Обитают львы, гепарды, верблюды и другие животные пустыни</li>
+                    </ul>
+                `
+            },
+            everest: {
+                title: '⛰️ Эверест',
+                content: `
+                    <h2>⛰️ Эверест</h2>
+                    <p style="margin-top: 1rem; line-height: 1.8;">
+                        Самая высокая гора на Земле, расположенная в Гималаях на границе Непала и Тибета.
+                    </p>
+                    <ul style="margin-left: 2rem; margin-top: 1rem;">
+                        <li>📏 Высота: 8,849 метров</li>
+                        <li>❄️ Температура на вершине: -60°C</li>
+                        <li>🧗 Первое успешное восхождение: 1953 год</li>
+                        <li>💀 Более 300 человек погибло при попытках подняться</li>
+                        <li>🌬️ Скорость ветра на вершине может превышать 320 км/ч</li>
+                    </ul>
+                `
+            },
+            aurora: {
+                title: '✨ Полярные сияния',
+                content: `
+                    <h2>✨ Полярные сияния</h2>
+                    <p style="margin-top: 1rem; line-height: 1.8;">
+                        Одно из самых красивых природных явлений, вызванное взаимодействием солнечного ветра с атмосферой Земли.
+                    </p>
+                    <ul style="margin-left: 2rem; margin-top: 1rem;">
+                        <li>🌈 Цвета: зеленый (наиболее часто), красный, фиолетовый</li>
+                        <li>📍 Видны в основном в высоких широтах (Северная Норвегия, Аляска, Канада)</li>
+                        <li>☀️ Вызваны частицами солнечного ветра</li>
+                        <li>🎨 Древние народы видели в них духов и богов</li>
+                    </ul>
+                `
+            },
+            reef: {
+                title: '🪸 Большой барьерный риф',
+                content: `
+                    <h2>🪸 Большой барьерный риф</h2>
+                    <p style="margin-top: 1rem; line-height: 1.8;">
+                        Самая большая система коралловых рифов в мире, расположенная у берегов Австралии. Видна даже из космоса!
+                    </p>
+                    <ul style="margin-left: 2rem; margin-top: 1rem;">
+                        <li>📏 Длина: 2,300 км</li>
+                        <li>🐠 Обитает более 1,500 видов рыб</li>
+                        <li>🐢 Домом для морских черепах и дюгоней</li>
+                        <li>🌍 Поддерживает жизнь миллионов организмов</li>
+                        <li>⚠️ Находится под угрозой из-за повышения температуры воды</li>
+                    </ul>
+                `
+            }
+        };
+
+        function showLocationInfo(location) {
+            const info = locationsInfo[location];
+            document.getElementById('location-content').innerHTML = info.content;
+            openModal('location-modal');
+        }
+
+        // Подписка на новости
+        function subscribeNewsletter(event) {
+            event.preventDefault();
+            const message = document.getElementById('subscribe-message');
+            message.textContent = '✅ Спасибо за подписку! Проверьте вашу почту.';
+            message.style.color = '#00d4ff';
+            event.target.reset();
+            
+            setTimeout(() => {
+                message.textContent = '';
+            }, 3000);
+        }
+
+        // Скролл к секции
+        function scrollToSection(sectionId) {
+            const section = document.getElementById(sectionId);
+            section.scrollIntoView({ behavior: 'smooth' });
+        }
+
+        // Создание частиц при клике
+        document.addEventListener('click', (e) => {
+            if (e.target.classList.contains('btn-primary')) {
+                for (let i = 0; i < 5; i++) {
+                    createParticle(e.clientX, e.clientY);
+                }
+            }
+        });
+
+        function createParticle(x, y) {
+            const particle = document.createElement('div');
+            particle.style.left = x + 'px';
+            particle.style.top = y + 'px';
+            particle.style.position = 'fixed';
+            particle.style.pointerEvents = 'none';
+            particle.style.fontSize = '20px';
+            particle.innerHTML = ['✨', '💫', '⭐', '🌟'][Math.floor(Math.random() * 4)];
+            particle.style.animation = 'particleFloat 1s ease-out forwards';
+            
+            document.body.appendChild(particle);
+            
+            setTimeout(() => particle.remove(), 1000);
+        }
+
+        // CSS для анимации частиц
+        const style = document.createElement('style');
+        style.innerHTML = `
+            @keyframes particleFloat {
+                to {
+                    transform: translateY(-100px);
+                    opacity: 0;
+                }
+            }
+        `;
+        document.head.appendChild(style);
+
+        // Обработка прокрутки страницы
+        window.addEventListener('scroll', () => {
+            const nav = document.querySelector('nav');
+            if (window.scrollY > 50) {
+                nav.style.background = 'rgba(26, 26, 46, 0.98)';
+            } else {
+                nav.style.background = 'rgba(26, 26, 46, 0.95)';
+            }
+        });
+
+        // Эффект параллакса
+        window.addEventListener('mousemove', (e) => {
+            const waves = document.querySelectorAll('.wave');
+            waves.forEach((wave, index) => {
+                const speed = (index + 1) * 0.5;
+                wave.style.transform = `translateX(${e.clientX * speed * 0.0001}px)`;
+            });
+        });
+    </script>
+</body>
+</html>
