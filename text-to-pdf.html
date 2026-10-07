@@ -1,0 +1,897 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Text to PDF Converter - Конвертер текста в PDF</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 2rem;
+            overflow-x: hidden;
+        }
+
+        /* Анимированный фон */
+        .animated-bg {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+            background: linear-gradient(-45deg, #667eea, #764ba2, #f093fb, #4facfe);
+            background-size: 400% 400%;
+            animation: gradient 15s ease infinite;
+        }
+
+        @keyframes gradient {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+
+        /* Плавающие частицы */
+        .particles {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+            overflow: hidden;
+        }
+
+        .particle {
+            position: absolute;
+            background: rgba(255, 255, 255, 0.5);
+            border-radius: 50%;
+            animation: float 20s infinite;
+        }
+
+        @keyframes float {
+            0% {
+                transform: translateY(100vh) translateX(0) rotate(0deg);
+                opacity: 1;
+            }
+            100% {
+                transform: translateY(-100vh) translateX(100px) rotate(360deg);
+                opacity: 0;
+            }
+        }
+
+        .container {
+            max-width: 1000px;
+            width: 100%;
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 20px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            backdrop-filter: blur(10px);
+            overflow: hidden;
+            animation: slideIn 0.6s ease-out;
+        }
+
+        @keyframes slideIn {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 3rem 2rem;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .header::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            right: -50%;
+            width: 200px;
+            height: 200px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 50%;
+            animation: pulse 3s infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.2); }
+        }
+
+        .header h1 {
+            font-size: 2.5rem;
+            margin-bottom: 0.5rem;
+            position: relative;
+            z-index: 1;
+        }
+
+        .header p {
+            font-size: 1.1rem;
+            opacity: 0.9;
+            position: relative;
+            z-index: 1;
+        }
+
+        .content {
+            padding: 3rem 2rem;
+        }
+
+        .section {
+            margin-bottom: 2rem;
+        }
+
+        .section-title {
+            font-size: 1.5rem;
+            color: #667eea;
+            margin-bottom: 1rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .section-title::before {
+            content: '';
+            width: 4px;
+            height: 24px;
+            background: linear-gradient(180deg, #667eea, #764ba2);
+            border-radius: 2px;
+        }
+
+        .input-group {
+            margin-bottom: 1.5rem;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 0.5rem;
+            color: #333;
+            font-weight: 500;
+            font-size: 0.95rem;
+        }
+
+        textarea {
+            width: 100%;
+            min-height: 300px;
+            padding: 1.5rem;
+            border: 2px solid #e0e0e0;
+            border-radius: 12px;
+            font-family: 'Courier New', monospace;
+            font-size: 1rem;
+            resize: vertical;
+            transition: all 0.3s;
+            background: #f9f9f9;
+        }
+
+        textarea:focus {
+            outline: none;
+            border-color: #667eea;
+            background: #fff;
+            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+        }
+
+        .options-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+        }
+
+        .option-box {
+            background: #f5f5f5;
+            padding: 1.5rem;
+            border-radius: 12px;
+            border: 2px solid #e0e0e0;
+            transition: all 0.3s;
+        }
+
+        .option-box:hover {
+            border-color: #667eea;
+            background: #f0f4ff;
+            transform: translateY(-2px);
+        }
+
+        .option-box label {
+            margin-bottom: 0.8rem;
+        }
+
+        input[type="text"],
+        input[type="number"],
+        input[type="color"],
+        select {
+            width: 100%;
+            padding: 0.7rem;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            font-size: 0.9rem;
+            transition: all 0.3s;
+        }
+
+        input[type="text"]:focus,
+        input[type="number"]:focus,
+        input[type="color"]:focus,
+        select:focus {
+            outline: none;
+            border-color: #667eea;
+            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+        }
+
+        .button-group {
+            display: flex;
+            gap: 1rem;
+            flex-wrap: wrap;
+        }
+
+        button {
+            flex: 1;
+            min-width: 150px;
+            padding: 1rem;
+            border: none;
+            border-radius: 12px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            box-shadow: 0 4px 15px rgba(102, 126, 234, 0.4);
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(102, 126, 234, 0.6);
+        }
+
+        .btn-primary:active {
+            transform: translateY(0);
+        }
+
+        .btn-secondary {
+            background: white;
+            color: #667eea;
+            border: 2px solid #667eea;
+        }
+
+        .btn-secondary:hover {
+            background: #f0f4ff;
+            transform: translateY(-2px);
+        }
+
+        .btn-download {
+            background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+            color: white;
+            box-shadow: 0 4px 15px rgba(245, 87, 108, 0.4);
+        }
+
+        .btn-download:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(245, 87, 108, 0.6);
+        }
+
+        .preview-section {
+            background: #f9f9f9;
+            border: 2px dashed #667eea;
+            border-radius: 12px;
+            padding: 2rem;
+            margin-top: 2rem;
+            max-height: 400px;
+            overflow-y: auto;
+        }
+
+        .preview-section h3 {
+            color: #667eea;
+            margin-bottom: 1rem;
+        }
+
+        #preview {
+            background: white;
+            padding: 1.5rem;
+            border-radius: 8px;
+            line-height: 1.8;
+            color: #333;
+            white-space: pre-wrap;
+            word-wrap: break-word;
+        }
+
+        .loading {
+            display: none;
+            text-align: center;
+            margin: 2rem 0;
+        }
+
+        .spinner {
+            border: 4px solid #f3f3f3;
+            border-top: 4px solid #667eea;
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            animation: spin 1s linear infinite;
+            margin: 0 auto 1rem;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .message {
+            padding: 1rem;
+            border-radius: 12px;
+            margin-bottom: 1rem;
+            display: none;
+            animation: slideDown 0.3s ease-out;
+        }
+
+        @keyframes slideDown {
+            from {
+                opacity: 0;
+                transform: translateY(-10px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .message.success {
+            background: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+            display: block;
+        }
+
+        .message.error {
+            background: #f8d7da;
+            color: #721c24;
+            border: 1px solid #f5c6cb;
+            display: block;
+        }
+
+        .info-box {
+            background: linear-gradient(135deg, rgba(102, 126, 234, 0.1), rgba(118, 75, 162, 0.1));
+            border-left: 4px solid #667eea;
+            padding: 1rem;
+            border-radius: 8px;
+            margin-bottom: 2rem;
+            color: #333;
+        }
+
+        .info-box strong {
+            color: #667eea;
+        }
+
+        /* Адаптивность */
+        @media (max-width: 768px) {
+            .header h1 {
+                font-size: 2rem;
+            }
+
+            .content {
+                padding: 1.5rem;
+            }
+
+            .options-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .button-group {
+                flex-direction: column;
+            }
+
+            button {
+                min-width: 100%;
+            }
+        }
+
+        /* Примеры текста */
+        .examples {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1rem;
+            margin-top: 2rem;
+        }
+
+        .example-btn {
+            background: #f5f5f5;
+            border: 1px solid #ddd;
+            padding: 1rem;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s;
+            text-align: center;
+            font-weight: 500;
+            color: #333;
+        }
+
+        .example-btn:hover {
+            background: #667eea;
+            color: white;
+            border-color: #667eea;
+        }
+
+        .char-count {
+            font-size: 0.9rem;
+            color: #999;
+            margin-top: 0.5rem;
+        }
+
+        /* Скрытый элемент для PDF */
+        #pdf-content {
+            display: none;
+            padding: 20px;
+            background: white;
+        }
+
+        .pdf-header {
+            text-align: center;
+            margin-bottom: 30px;
+            border-bottom: 2px solid #667eea;
+            padding-bottom: 20px;
+        }
+
+        .pdf-title {
+            font-size: 24px;
+            color: #667eea;
+            margin-bottom: 5px;
+            font-weight: bold;
+        }
+
+        .pdf-metadata {
+            font-size: 12px;
+            color: #999;
+            margin-top: 10px;
+        }
+
+        .pdf-body {
+            line-height: 1.8;
+            color: #333;
+            font-size: 14px;
+        }
+
+        .footer-watermark {
+            margin-top: 30px;
+            border-top: 1px solid #ddd;
+            padding-top: 20px;
+            text-align: center;
+            color: #999;
+            font-size: 12px;
+        }
+
+        /* Вкладки */
+        .tabs {
+            display: flex;
+            gap: 1rem;
+            margin-bottom: 2rem;
+            border-bottom: 2px solid #e0e0e0;
+        }
+
+        .tab {
+            padding: 1rem;
+            cursor: pointer;
+            color: #999;
+            border-bottom: 3px solid transparent;
+            transition: all 0.3s;
+            font-weight: 500;
+        }
+
+        .tab.active {
+            color: #667eea;
+            border-bottom-color: #667eea;
+        }
+
+        .tab:hover {
+            color: #667eea;
+        }
+
+        .tab-content {
+            display: none;
+        }
+
+        .tab-content.active {
+            display: block;
+        }
+    </style>
+</head>
+<body>
+    <div class="animated-bg"></div>
+    <div class="particles" id="particles"></div>
+
+    <div class="container">
+        <div class="header">
+            <h1>📄 Text to PDF Converter</h1>
+            <p>Превратите любой текст в красивый PDF файл за секунды</p>
+        </div>
+
+        <div class="content">
+            <!-- Информационный блок -->
+            <div class="info-box">
+                <strong>💡 Совет:</strong> Введите или вставьте ваш текст, настройте параметры дизайна и скачайте PDF файл одним кликом!
+            </div>
+
+            <!-- Вкладки -->
+            <div class="tabs">
+                <div class="tab active" onclick="switchTab('editor')">✏️ Редактор</div>
+                <div class="tab" onclick="switchTab('settings')">⚙️ Настройки</div>
+                <div class="tab" onclick="switchTab('preview')">👁️ Предпросмотр</div>
+            </div>
+
+            <!-- Сообщение об ошибке/успехе -->
+            <div id="message" class="message"></div>
+
+            <!-- TAB 1: Редактор -->
+            <div id="editor-tab" class="tab-content active">
+                <div class="section">
+                    <div class="input-group">
+                        <label for="text-input">📝 Введите ваш текст:</label>
+                        <textarea id="text-input" placeholder="Вставьте сюда ваш текст, который хотите превратить в PDF...&#10;&#10;Вы можете использовать форматирование или просто простой текст."></textarea>
+                        <div class="char-count">Символов: <span id="char-count">0</span> | Слов: <span id="word-count">0</span></div>
+                    </div>
+
+                    <div class="section-title">📚 Примеры текста:</div>
+                    <div class="examples">
+                        <button class="example-btn" onclick="loadExample('novel')">📖 Фрагмент романа</button>
+                        <button class="example-btn" onclick="loadExample('essay')">📝 Эссе</button>
+                        <button class="example-btn" onclick="loadExample('poem')">✨ Стихотворение</button>
+                        <button class="example-btn" onclick="loadExample('story')">🎭 История</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- TAB 2: Настройки -->
+            <div id="settings-tab" class="tab-content">
+                <div class="section">
+                    <div class="section-title">🎨 Дизайн и оформление</div>
+                    
+                    <div class="options-grid">
+                        <div class="option-box">
+                            <label for="pdf-title">Название документа:</label>
+                            <input type="text" id="pdf-title" value="Мой документ" placeholder="Название PDF">
+                        </div>
+
+                        <div class="option-box">
+                            <label for="author-name">Автор:</label>
+                            <input type="text" id="author-name" value="Автор" placeholder="Ваше имя">
+                        </div>
+
+                        <div class="option-box">
+                            <label for="font-size">Размер шрифта (px):</label>
+                            <input type="number" id="font-size" value="14" min="10" max="24">
+                        </div>
+
+                        <div class="option-box">
+                            <label for="line-height">Интервал между строками:</label>
+                            <select id="line-height">
+                                <option value="1.5">Одинарный</option>
+                                <option value="1.8" selected>Полуторный</option>
+                                <option value="2">Двойной</option>
+                                <option value="2.5">Тройной</option>
+                            </select>
+                        </div>
+
+                        <div class="option-box">
+                            <label for="font-family">Шрифт:</label>
+                            <select id="font-family">
+                                <option value="Arial">Arial</option>
+                                <option value="Georgia" selected>Georgia</option>
+                                <option value="Times New Roman">Times New Roman</option>
+                                <option value="Courier New">Courier New</option>
+                                <option value="Verdana">Verdana</option>
+                            </select>
+                        </div>
+
+                        <div class="option-box">
+                            <label for="text-color">Цвет текста:</label>
+                            <input type="color" id="text-color" value="#333333">
+                        </div>
+
+                        <div class="option-box">
+                            <label for="accent-color">Цвет акцента:</label>
+                            <input type="color" id="accent-color" value="#667eea">
+                        </div>
+
+                        <div class="option-box">
+                            <label for="page-size">Размер страницы:</label>
+                            <select id="page-size">
+                                <option value="a4" selected>A4</option>
+                                <option value="letter">Letter</option>
+                                <option value="a3">A3</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="section-title" style="margin-top: 2rem;">✅ Опции документа</div>
+                    
+                    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1rem;">
+                        <label style="display: flex; align-items: center; gap: 0.5rem; cursor: pointer;">
+                            <input type="checkbox" id="add-header" checked>
+                            <span>Добавить заголовок</span>
+                        </label>
+
+                        <label style="display: flex; align-items: center; gap: 0.5rem; cursor: pointer;">
+                            <input type="checkbox" id="add-footer" checked>
+                            <span>Добавить номера страниц</span>
+                        </label>
+
+                        <label style="display: flex; align-items: center; gap: 0.5rem; cursor: pointer;">
+                            <input type="checkbox" id="add-date" checked>
+                            <span>Добавить дату</span>
+                        </label>
+
+                        <label style="display: flex; align-items: center; gap: 0.5rem; cursor: pointer;">
+                            <input type="checkbox" id="borders" checked>
+                            <span>Границы вокруг блоков</span>
+                        </label>
+                    </div>
+                </div>
+            </div>
+
+            <!-- TAB 3: Предпросмотр -->
+            <div id="preview-tab" class="tab-content">
+                <div class="section">
+                    <div class="section-title">👁️ Предпросмотр документа</div>
+                    <div class="preview-section">
+                        <div id="preview" style="border: 1px solid #e0e0e0; border-radius: 8px; padding: 20px; background: white;"></div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Кнопки действия -->
+            <div class="button-group" style="margin-top: 2rem;">
+                <button class="btn-primary" onclick="updatePreview()">🔄 Обновить предпросмотр</button>
+                <button class="btn-download" onclick="generatePDF()">📥 Скачать PDF</button>
+                <button class="btn-secondary" onclick="clearText()">🗑️ Очистить</button>
+            </div>
+
+            <!-- Загрузка -->
+            <div class="loading" id="loading">
+                <div class="spinner"></div>
+                <p>Генерируется PDF файл...</p>
+            </div>
+        </div>
+
+        <!-- Скрытый элемент для PDF -->
+        <div id="pdf-content">
+            <div class="pdf-header">
+                <div class="pdf-title" id="pdf-title-display">Мой документ</div>
+                <div class="pdf-metadata">
+                    <p>Автор: <span id="pdf-author-display">Автор</span></p>
+                    <p>Дата: <span id="pdf-date-display"></span></p>
+                </div>
+            </div>
+            <div class="pdf-body" id="pdf-body-content"></div>
+            <div class="footer-watermark">
+                <p>Создано с помощью Text to PDF Converter</p>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Инициализация частиц
+        function createParticles() {
+            const container = document.getElementById('particles');
+            for (let i = 0; i < 20; i++) {
+                const particle = document.createElement('div');
+                particle.className = 'particle';
+                particle.style.width = Math.random() * 5 + 2 + 'px';
+                particle.style.height = particle.style.width;
+                particle.style.left = Math.random() * 100 + '%';
+                particle.style.bottom = Math.random() * 100 + '%';
+                particle.style.animationDelay = Math.random() * 5 + 's';
+                particle.style.animationDuration = Math.random() * 10 + 10 + 's';
+                container.appendChild(particle);
+            }
+        }
+        createParticles();
+
+        // Подсчет символов и слов
+        document.getElementById('text-input').addEventListener('input', function() {
+            const text = this.value;
+            document.getElementById('char-count').textContent = text.length;
+            document.getElementById('word-count').textContent = text.trim().split(/\s+/).filter(w => w.length > 0).length;
+        });
+
+        // Примеры текста
+        const examples = {
+            novel: `Когда Пьер вернулся в Санкт-Петербург, его никто не узнал. Облик его изменился так же мало, как изменился Санкт-Петербург, но выражение его лица, его осанка, его самоуверенность, – все почти неуловимо изменилось.
+
+Пьер отошел в угол комнаты и, облокотившись на стену, наблюдал. Его внимание было приковано не к залу и его украшениям, не к множеству дам и кавалеров, знакомых для него лиц, – его внимание было приковано только к одному человеку.
+
+На светлой улице блистала и гудела масса экипажей, везущих дам на бал, весь вечер вплоть до звезд и холодных ночей.`,
+
+            essay: `Философия науки занимает центральное место в современной мысли. Она задает вопросы о природе знания, о методах научного исследования, о связи теории и практики.
+
+Наука является самым надежным источником знаний о мире. Однако это не означает, что наука может ответить на все вопросы, которые задает себе человечество. Существуют области, где наука молчит или говорит неуверенно.
+
+Развитие науки – это не линейный процесс накопления знаний. Это сложный процесс смены парадигм, появления новых теорий, опровержения старых представлений.`,
+
+            poem: `Люблю я пышное природы увяданье,
+В багрец и золото одетые поля,
+Лесов таинственную грусть и тень,
+И дышащий под ногами мне листопад.
+
+На солнце ясном блещет в зелени трава,
+И светлый луч спускается с небес,
+Сквозь еловый, сквозь сосновый лес
+Раздается песенка иная.
+
+Когда волшебный мир природы дышит мне
+Дыханием сентябрьского тепла,
+Тогда душой я чувствую, что вот
+Пришел желанный миг забвенья и забвенья.`,
+
+            story: `История о старой книге началась в пыльной библиотеке маленького города. Библиотекарь Маша находила эту книгу каждый день в одном и том же месте, как будто кто-то специально ее туда клал.
+
+Однажды, при свечах вечера, она решила прочитать эту книгу. Первая страница была испещрена странными знаками, но со второй страницы начиналась история о путешественнике, который искал сокровище в далеких землях.
+
+Маша читала всю ночь, забыв о времени. Когда рассвет озарил окна библиотеки, она поняла: эта книга изменила ее жизнь. Она решила выйти в путешествие и отыскать то, о чем мечтала`
+        };
+
+        function loadExample(type) {
+            document.getElementById('text-input').value = examples[type];
+            document.getElementById('text-input').dispatchEvent(new Event('input'));
+            updatePreview();
+        }
+
+        // Переключение вкладок
+        function switchTab(tabName) {
+            // Скрыть все вкладки
+            document.querySelectorAll('.tab-content').forEach(tab => {
+                tab.classList.remove('active');
+            });
+            document.querySelectorAll('.tab').forEach(tab => {
+                tab.classList.remove('active');
+            });
+
+            // Показать выбранную вкладку
+            document.getElementById(tabName + '-tab').classList.add('active');
+            event.target.classList.add('active');
+
+            if (tabName === 'preview') {
+                updatePreview();
+            }
+        }
+
+        // Обновление предпросмотра
+        function updatePreview() {
+            const text = document.getElementById('text-input').value;
+            const fontSize = document.getElementById('font-size').value;
+            const lineHeight = document.getElementById('line-height').value;
+            const fontFamily = document.getElementById('font-family').value;
+            const textColor = document.getElementById('text-color').value;
+            
+            let preview = document.getElementById('preview');
+            preview.innerHTML = text;
+            preview.style.fontSize = fontSize + 'px';
+            preview.style.lineHeight = lineHeight;
+            preview.style.fontFamily = fontFamily;
+            preview.style.color = textColor;
+        }
+
+        // Очистка текста
+        function clearText() {
+            if (confirm('Вы уверены, что хотите очистить текст?')) {
+                document.getElementById('text-input').value = '';
+                document.getElementById('text-input').dispatchEvent(new Event('input'));
+                updatePreview();
+                showMessage('Текст очищен', 'success');
+            }
+        }
+
+        // Показать сообщение
+        function showMessage(text, type) {
+            const message = document.getElementById('message');
+            message.textContent = text;
+            message.className = 'message ' + type;
+            
+            setTimeout(() => {
+                message.className = 'message';
+            }, 3000);
+        }
+
+        // Генерация PDF
+        function generatePDF() {
+            const text = document.getElementById('text-input').value;
+            
+            if (text.trim() === '') {
+                showMessage('❌ Пожалуйста, введите текст перед генерацией PDF', 'error');
+                return;
+            }
+
+            // Показать загрузку
+            document.getElementById('loading').style.display = 'block';
+
+            // Заполнить PDF контент
+            const title = document.getElementById('pdf-title').value;
+            const author = document.getElementById('author-name').value;
+            const fontSize = document.getElementById('font-size').value;
+            const lineHeight = document.getElementById('line-height').value;
+            const fontFamily = document.getElementById('font-family').value;
+            const textColor = document.getElementById('text-color').value;
+            const accentColor = document.getElementById('accent-color').value;
+            const pageSize = document.getElementById('page-size').value;
+            const addDate = document.getElementById('add-date').checked;
+
+            // Обновить PDF контент
+            document.getElementById('pdf-title-display').textContent = title;
+            document.getElementById('pdf-author-display').textContent = author;
+            
+            if (addDate) {
+                const now = new Date();
+                const dateStr = now.toLocaleDateString('ru-RU', {
+                    year: 'numeric',
+                    month: 'long',
+                    day: 'numeric',
+                    hour: '2-digit',
+                    minute: '2-digit'
+                });
+                document.getElementById('pdf-date-display').textContent = dateStr;
+            }
+
+            document.getElementById('pdf-body-content').innerHTML = text;
+            document.getElementById('pdf-body-content').style.fontSize = fontSize + 'px';
+            document.getElementById('pdf-body-content').style.lineHeight = lineHeight;
+            document.getElementById('pdf-body-content').style.fontFamily = fontFamily;
+            document.getElementById('pdf-body-content').style.color = textColor;
+
+            // Обновить цвета заголовка
+            document.getElementById('pdf-title-display').style.color = accentColor;
+
+            // Дождаться немного и создать PDF
+            setTimeout(() => {
+                const element = document.getElementById('pdf-content');
+                const options = {
+                    margin: 10,
+                    filename: title + '.pdf',
+                    image: { type: 'jpeg', quality: 0.98 },
+                    html2canvas: { scale: 2 },
+                    jsPDF: { 
+                        orientation: 'portrait', 
+                        unit: 'mm', 
+                        format: pageSize 
+                    }
+                };
+
+                html2pdf().set(options).from(element).save().then(() => {
+                    document.getElementById('loading').style.display = 'none';
+                    showMessage('✅ PDF успешно скачан!', 'success');
+                }).catch(err => {
+                    document.getElementById('loading').style.display = 'none';
+                    showMessage('❌ Ошибка при создании PDF', 'error');
+                    console.error(err);
+                });
+            }, 500);
+        }
+
+        // Загрузить первый пример при загрузке страницы
+        window.addEventListener('load', () => {
+            updatePreview();
+        });
+    </script>
+</body>
+</html>
